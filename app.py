@@ -4,7 +4,7 @@ import io
 import PIL.Image as Image
 from streamlit_sortables import sort_items
 import zipfile
-
+st.set_page_config(layout="wide")
 def download_multiple_files(images):
 
 
@@ -20,24 +20,22 @@ def download_multiple_files(images):
         file_name="myimages.zip",
         data=buf.getvalue()
     )
-
-uploaded_files = st.file_uploader("Choose a file", accept_multiple_files=True)
-
-if len(uploaded_files)>0:
-    files = {}
-    for index, uploaded_file in enumerate(uploaded_files):
-        bytes_data = uploaded_file.read()
-        files[uploaded_file.name] = bytes_data
-    sel = sort_items([x.name for x in uploaded_files])
-    cols = st.columns(6)
-    index = 0
-    for key in sel:
-
-        with cols[index]:
-            st.image(files[key])
-            st.text(key)
-        index += 1
-
+cols = st.columns(3)
+with cols[0]:
+    uploaded_files = st.file_uploader("Choose a file", accept_multiple_files=True)
+with cols[1]:
+    if len(uploaded_files)>0:
+        files = {}
+        for index, uploaded_file in enumerate(uploaded_files):
+            bytes_data = uploaded_file.read()
+            files[uploaded_file.name] = bytes_data
+        sel = sort_items([x.name for x in uploaded_files], direction="vertical")
+    if len(uploaded_files) > 0:
+        with cols[2]:
+            for key in sel:
+                st.image(files[key], width=100)
+                st.text(key)
+if len(uploaded_files) > 0:
     asin = st.text_input("ASIN")
     if st.button("Submit"):
         images = []
