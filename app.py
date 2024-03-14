@@ -33,13 +33,15 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
 
-
-firefoxOptions = FirefoxOptions()
-firefoxOptions.headless = True
-driver = webdriver.Firefox(
-    options=firefoxOptions,
-    executable_path="/home/appuser/.conda/bin/geckodriver",
-)
+@st.cache_data
+def get_driver():
+    firefoxOptions = FirefoxOptions()
+    firefoxOptions.headless = True
+    driver = webdriver.Firefox(
+        options=firefoxOptions,
+        executable_path="/home/appuser/.conda/bin/geckodriver",
+    )
+    return driver
 
 
 def solve_captcha():
@@ -70,6 +72,7 @@ def download_images_from_url(url_page):
     delay = 3  # seconds
     captcha = True
     print(url_page)
+    driver = get_driver()
     driver.get(url_page)
     myElem = WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.ID, 'sp-cc-rejectall-link')))
     myElem.click()
