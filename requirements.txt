@@ -1,7 +1,6 @@
 amazoncaptcha==0.5.11
 numpy==1.26.4
 pandas==2.2.1
-Pillow==9.5.0
 Pillow==10.2.0
 Requests==2.31.0
 selenium==4.18.1
