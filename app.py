@@ -14,7 +14,8 @@ from amazoncaptcha import AmazonCaptcha
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver import FirefoxOptions
+
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import numpy as np
@@ -24,7 +25,11 @@ import requests
 
 from selenium.webdriver.common.action_chains import ActionChains
 
+def installff():
+  os.system('sbase install geckodriver')
+  os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
 
+_ = installff()
 def solve_captcha():
     captcha = AmazonCaptcha.fromdriver(driver)
     solution = captcha.solve(True)
@@ -48,9 +53,9 @@ def download_image(image_url, folder, name):
 
 def download_images_from_url(url_page):
     asin = url_page.split("/")[-1]
-    options = Options()
+    options = FirefoxOptions()
     options.add_argument("--headless=new")
-    driver = webdriver.Chrome(options=options)  # This is a simplified example
+    driver = webdriver.Firefox(options=options)  # This is a simplified example
 
     delay = 3  # seconds
     captcha = True
