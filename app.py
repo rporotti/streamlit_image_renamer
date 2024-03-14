@@ -33,7 +33,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
 
-@st.experimental_singleton
+@st.cache_resource
 def installff():
   os.system('sbase install geckodriver')
   os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
@@ -67,7 +67,7 @@ def download_image(image_url, folder, name):
 
 def download_images_from_url(url_page):
     asin = url_page.split("/")[-1]
-    driver = get_driver()
+
 
     delay = 3  # seconds
     captcha = True
