@@ -178,7 +178,7 @@ if url_page != "" :
                 image.save("to_download/" + filename.format(im_format=image.format))
                 images.append("to_download/" + filename)
             download_multiple_files(images)
-            shutil.rmtree("output")
-            shutil.rmtree("to_download")
+            shutil.rmtree("output", ignore_errors=True)
+            shutil.rmtree("to_download", ignore_errors=True)
             os.makedirs("output")
 
