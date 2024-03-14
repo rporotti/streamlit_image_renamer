@@ -120,6 +120,7 @@ print(url_page)
 
 download = False
 if url_page != "" :
+    os.makedirs("output")
     asin = url_page.split("/")[-1]
 
     if not any([asin in x for x in os.listdir("output")]):
