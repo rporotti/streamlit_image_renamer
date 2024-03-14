@@ -34,7 +34,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
 
 
-firefoxOptions = Options()
+firefoxOptions = FirefoxOptions()
 firefoxOptions.headless = True
 driver = webdriver.Firefox(
     options=firefoxOptions,
