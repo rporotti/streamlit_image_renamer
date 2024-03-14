@@ -27,6 +27,20 @@ import requests
 
 from selenium.webdriver.common.action_chains import ActionChains
 
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+@st.experimental_singleton
+def get_driver():
+    options = Options()
+    options.add_argument('--disable-gpu')
+    options.add_argument('--headless')
+    return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+
+
 
 def solve_captcha():
     captcha = AmazonCaptcha.fromdriver(driver)
@@ -51,14 +65,7 @@ def download_image(image_url, folder, name):
 
 def download_images_from_url(url_page):
     asin = url_page.split("/")[-1]
-    options = FirefoxOptions()
-    options.add_argument("--headless")
-    service = Service(GeckoDriverManager().install())
-    driver = webdriver.Firefox(
-        options=options,
-        service=service,
-    )
-    driver = webdriver.Firefox(options=options, service=service)  # This is a simplified example
+    driver = get_driver()
 
     delay = 3  # seconds
     captcha = True
