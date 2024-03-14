@@ -15,7 +15,9 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver import FirefoxOptions
+from selenium.webdriver.firefox.service import Service
 
+from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import numpy as np
@@ -55,7 +57,12 @@ def download_images_from_url(url_page):
     asin = url_page.split("/")[-1]
     options = FirefoxOptions()
     options.add_argument("--headless")
-    driver = webdriver.Firefox(options=options)  # This is a simplified example
+    service = Service(GeckoDriverManager().install())
+    driver = webdriver.Firefox(
+        options=options,
+        service=service,
+    )
+    driver = webdriver.Firefox(options=options, service=service)  # This is a simplified example
 
     delay = 3  # seconds
     captcha = True
