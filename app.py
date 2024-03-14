@@ -33,7 +33,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
 
-@st.cache_data
+
 def get_driver():
     firefoxOptions = FirefoxOptions()
     firefoxOptions.headless = True
