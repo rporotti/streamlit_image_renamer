@@ -44,7 +44,11 @@ if len(uploaded_files) > 0:
             ext = key.split(".")[-1]
             print(files[key])
             image = Image.open(BytesIO(files[key]))
-            image.save(f"{asin}.{index}.{ext}".format(im_format=image.format))
-            images.append(f"{asin}.{index}.{ext}")
+            if index == 0:
+                filename = f"{asin}.MAIN.{ext}"
+            else:
+                filename = f"{asin}.PT{str(index).zfill(2)}.{ext}"
+            image.save(filename.format(im_format=image.format))
+            images.append(filename)
         download_multiple_files(images)
 
