@@ -35,7 +35,7 @@ from webdriver_manager.core.os_manager import ChromeType
 
 
 firefoxOptions = Options()
-firefoxOptions.add_argument("--headless")
+firefoxOptions.headless = True
 driver = webdriver.Firefox(
     options=firefoxOptions,
     executable_path="/home/appuser/.conda/bin/geckodriver",
