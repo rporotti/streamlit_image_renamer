@@ -54,7 +54,7 @@ def download_image(image_url, folder, name):
 def download_images_from_url(url_page):
     asin = url_page.split("/")[-1]
     options = FirefoxOptions()
-    options.add_argument("--headless=new")
+    options.add_argument("--headless")
     driver = webdriver.Firefox(options=options)  # This is a simplified example
 
     delay = 3  # seconds
