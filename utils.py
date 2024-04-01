@@ -2,7 +2,9 @@ import streamlit as st
 import io
 import PIL.Image as Image
 import zipfile
-
+from io import BytesIO
+import PIL.Image as Image
+import os
 from amazoncaptcha import AmazonCaptcha
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -37,7 +39,7 @@ def get_driver():
     return driver
 
 
-def solve_captcha():
+def solve_captcha(driver):
     captcha = AmazonCaptcha.fromdriver(driver)
     solution = captcha.solve(True)
     with open("not-solved-captcha.log", "r") as f:
@@ -71,7 +73,7 @@ def download_images_from_url(url_page):
     myElem.click()
 
     if not captcha:
-        solve_captcha()
+        solve_captcha(driver)
         myElem = WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.ID, 'sp-cc-rejectall-link')))
         myElem.click()
         captcha = True
@@ -118,9 +120,18 @@ def download_multiple_files(images):
     )
 
 @st.cache_data
-def load_images():
+def load_images(uploaded_files):
     files = {}
     for index, uploaded_file in enumerate(uploaded_files):
         image = Image.open(f"output/{uploaded_file}", "r")
-        files[uploaded_file] = image
+        files[uploaded_file] = [image, image.resize((100,100))]
+    return files
+
+@st.cache_data
+def load_images_uploaded(uploaded_files):
+    files = {}
+    for index, uploaded_file in enumerate(uploaded_files):
+        bytes_data = uploaded_file.read()
+        image = Image.open(BytesIO(bytes_data))
+        files[uploaded_file.name] = [image, image.resize((100,100))]
     return files
