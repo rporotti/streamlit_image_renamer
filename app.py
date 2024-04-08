@@ -1,12 +1,12 @@
 import streamlit as st
 
 from streamlit_sortables import sort_items
-from utils import download_images_from_url, download_multiple_files, load_images, load_images_uploaded
+from utils import download_images_from_url, download_multiple_files, load_images, load_images_uploaded, clean_files
 import os
-import shutil
 
 st.set_page_config(layout="wide")
-
+if st.button("Clean temporary images"):
+    clean_files()
 option = st.selectbox("Select mode", ["From upload", "From URL"], key="mode")
 prefixes = st.text_input("Insert prefixes (comma separated)", value="MAIN, PT")
 prefixes = prefixes.replace(" ", "").split(",")
@@ -19,22 +19,24 @@ if option == "From upload":
 elif option == "From URL":
     url_page = st.text_input("Insert URL")
     download = False
-    if url_page != "":
+    if st.button("Start"):
         if not os.path.exists("output"):
             os.makedirs("output")
+        if not os.path.exists("to_download"):
+            os.makedirs("to_download")
         asin = url_page.split("/")[-1]
 
         if not any([asin in x for x in os.listdir("output")]):
             title = download_images_from_url(url_page=url_page)
             download = True
             st.markdown(title)
-        cols = st.columns(3)
-        uploaded_files = sorted(os.listdir("output"))
-        files = load_images(uploaded_files)
-        sortable = True
+
+    cols = st.columns(3)
+    uploaded_files = sorted(os.listdir("output"))
+    files = load_images(uploaded_files)
+    sortable = True
 
 if files:
-
     cols = st.columns(2)
     with cols[0]:
         sel = sort_items(list(files.keys()), direction="vertical")
@@ -58,12 +60,11 @@ if files:
             image = files[key][0]
             prfix = f'prefix_{key}'
             if "PT" in prfix:
-                filename = f"{asin}.PT{str(index).zfill(2)}.{ext}"
+                filename = f"to_download/{asin}.PT{str(index).zfill(2)}.{ext}"
             else:
-                filename = f"{asin}.{st.session_state[prfix]}.{ext}"
+                filename = f"to_download/{asin}.{st.session_state[prfix]}.{ext}"
+            print(filename)
             image.save(filename.format(im_format=image.format))
             images.append(filename)
         download_multiple_files(images)
-        shutil.rmtree("output", ignore_errors=True)
-        shutil.rmtree("to_download", ignore_errors=True)
-        os.makedirs("output")
+
