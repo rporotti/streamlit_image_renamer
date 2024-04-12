@@ -63,12 +63,16 @@ if (option == "From upload" and files) or (option == "From URL" and os.path.exis
         if not os.path.exists(f"to_download/{asin}"):
             os.makedirs(f"to_download/{asin}")
         images = []
+        index_pt = 1
         for index, key in enumerate(sel):
             ext = key.split(".")[-1]
             image = files[key][0]
             prfix = f'prefix_{key}'
-
-            suffix = (f"PT{str(index).zfill(2)}" if "PT" in st.session_state[prfix] else st.session_state[prfix])
+            if "PT" in st.session_state[prfix]:
+                suffix = f"PT{str(index_pt).zfill(2)}"
+                index_pt += 1
+            else:
+                suffix = st.session_state[prfix]
             filename_zip = f"{asin_to_download}.{suffix}.{ext}"
             filename = f"to_download/{asin}/{asin_to_download}.{suffix}.{ext}"
 
