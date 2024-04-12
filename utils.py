@@ -82,7 +82,7 @@ def download_images_from_url(url_page):
         time.sleep(1)
         image = WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.ID, 'ivLargeImage')))
         url = image.find_elements(By.TAG_NAME, "img")[0].get_attribute("src")
-        download_image(url, "output", asin + "_" + str(0))
+        download_image(url, f"output/{asin}", asin + "_" + str(0).zfill(2))
 
     elem = driver.find_element(By.ID, "ivImagesTab")
     images = elem.find_elements(By.CLASS_NAME, "ivThumbImage")
@@ -102,11 +102,11 @@ def download_images_from_url(url_page):
                 button = WebDriverWait(driver, delay).until(
                     EC.visibility_of_element_located((By.ID, f'ivImage_{index}')))
                 button.click()
-
+                time.sleep(0.5)
                 image = WebDriverWait(driver, delay).until(EC.visibility_of_element_located((By.ID, 'ivLargeImage')))
                 url = image.find_elements(By.TAG_NAME, "img")[0].get_attribute("src")
 
-                download_image(url, "output", asin + "_" + str(index))
+                download_image(url, f"output/{asin}", asin + "_" + str(index).zfill(2))
                 my_bar.empty()
                 result=True
 
@@ -132,11 +132,12 @@ def download_multiple_files(images):
     )
 
 @st.cache_data
-def load_images(uploaded_files):
+def load_images(uploaded_files, asin):
     files = {}
     for index, uploaded_file in enumerate(uploaded_files):
-        image = Image.open(f"output/{uploaded_file}", "r")
-        files[uploaded_file] = [image, image.resize((100,100))]
+        if uploaded_file.endswith("jpg"):
+            image = Image.open(f"output/{asin}/{uploaded_file}", "r")
+            files[uploaded_file] = [image, image.resize((100,100))]
     return files
 
 @st.cache_data
