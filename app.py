@@ -58,7 +58,7 @@ if (option == "From upload" and files) or (option == "From URL" and os.path.exis
                         default_index = prefixes.index(default_value)
                     st.selectbox("Prefix", prefixes, key=f"prefix_{key}", index=default_index)
 
-    asin = st.text_input("ASIN")
+    asin_to_download = st.text_input("ASIN", value=asin)
     if st.button("Submit"):
         if not os.path.exists(f"to_download/{asin}"):
             os.makedirs(f"to_download/{asin}")
@@ -69,7 +69,8 @@ if (option == "From upload" and files) or (option == "From URL" and os.path.exis
             prfix = f'prefix_{key}'
 
             suffix = (f"PT{str(index).zfill(2)}" if "PT" in st.session_state[prfix] else st.session_state[prfix])
-            filename = f"to_download/{asin}/{asin}.{suffix}.{ext}"
+            filename_zip = f"{asin_to_download}.{suffix}.{ext}"
+            filename = f"to_download/{asin}/{asin_to_download}.{suffix}.{ext}"
 
             if image.mode == "JPEG":
                 image.save(filename.format(im_format=image.format))
@@ -79,6 +80,6 @@ if (option == "From upload" and files) or (option == "From URL" and os.path.exis
                 rgb_im.save(filename.format(im_format=image.format))
                 # some minor case, resulting jpg file is larger one, should meet your expectation
 
-            images.append(filename)
-        download_multiple_files(images)
+            images.append(filename_zip)
+        download_multiple_files(images, asin_to_download, root_folder=f"to_download/{asin}")
 

@@ -117,17 +117,16 @@ def download_images_from_url(url_page):
     return title
 
 
-def download_multiple_files(images):
+def download_multiple_files(images, asin_to_download, root_folder):
     buf = io.BytesIO()
-
     with zipfile.ZipFile(buf, "x") as zip:
         for zip_file in images:
-            zip.write(zip_file)
+            zip.write(os.path.join(root_folder, zip_file), zip_file)
 
     st.download_button(
         "Download all data",
         mime="application/zip",
-        file_name="myimages.zip",
+        file_name=f"{asin_to_download}.zip",
         data=buf.getvalue()
     )
 
