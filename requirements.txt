@@ -1,2 +1,10 @@
-streamlit-sortables==0.2.0
-streamlit==1.31.0
+amazoncaptcha
+numpy
+pandas
+Pillow
+Requests
+selenium
+streamlit==1.32.1
+streamlit_sortables==0.2.0
+seleniumbase
+webdriver-manager
