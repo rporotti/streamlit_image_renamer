@@ -135,8 +135,10 @@ def download_multiple_files(images, asin_to_download, root_folder):
 
 def post_download(asin, clean_all=False):
     if clean_all:
-        shutil.rmtree(f"output/{asin}")
-        shutil.rmtree(f"to_download/{asin}")
+        if os.path.exists(f"output/{asin}"):
+            shutil.rmtree(f"output/{asin}")
+        if os.path.exists(f"to_download/{asin}"):
+            shutil.rmtree(f"to_download/{asin}")
         #shutil.rmtree("output")
 
 @st.cache_data
