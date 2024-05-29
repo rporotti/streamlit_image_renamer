@@ -1,7 +1,7 @@
 import streamlit as st
 
 from streamlit_sortables import sort_items
-from utils import download_images_from_url, download_multiple_files, load_images, load_images_uploaded, clean_files
+from utils import download_images_from_url, download_multiple_files, load_images, load_images_uploaded, clean_files, get_filename_images
 import os
 
 st.set_page_config(layout="wide")
@@ -85,5 +85,6 @@ if (option == "From upload" and files) or (option == "From URL" and os.path.exis
                 # some minor case, resulting jpg file is larger one, should meet your expectation
 
             images.append(filename_zip)
+    if os.path.exists(f"to_download/{asin}"):
+        images = get_filename_images(sel, asin_to_download)
         download_multiple_files(images, asin_to_download, root_folder=f"to_download/{asin}")
-
