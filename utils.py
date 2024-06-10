@@ -122,7 +122,7 @@ def download_multiple_files(images, asin_to_download, root_folder):
     with zipfile.ZipFile(buf, "x") as zip:
         for zip_file in images:
             zip.write(os.path.join(root_folder, zip_file), zip_file)
-    status_checkbox = st.checkbox("Clean all files after download")
+    status_checkbox = st.checkbox("Clean all files after download", value=True)
     st.download_button(
         "Download all data",
         mime="application/zip",
