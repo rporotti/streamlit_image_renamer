@@ -1,7 +1,7 @@
 import streamlit as st
 
 from streamlit_sortables import sort_items
-from utils import download_images_from_url, download_multiple_files, load_images, load_images_uploaded, clean_files
+from utils import download_images_from_url, download_multiple_files, load_images, load_images_uploaded, clean_files, get_filename_images
 import os
 
 st.set_page_config(layout="wide")
@@ -15,7 +15,7 @@ files = {}
 if option == "From upload":
     uploaded_files = st.file_uploader("Choose a file", accept_multiple_files=True)
     files = load_images_uploaded(uploaded_files)
-    asin = None
+
 elif option == "From URL":
     url_page = st.text_input("Insert URL")
     download = False
@@ -57,11 +57,13 @@ if (option == "From upload" and files) or (option == "From URL" and os.path.exis
                     if default_value in prefixes:
                         default_index = prefixes.index(default_value)
                     st.selectbox("Prefix", prefixes, key=f"prefix_{key}", index=default_index)
-
-    asin_to_download = st.text_input("ASIN", value=asin)
+    if 'asin' in locals():
+        asin_to_download = st.text_input("ASIN", value=asin)
+    else:
+        asin_to_download = st.text_input("ASIN")
     if st.button("Submit"):
-        if not os.path.exists(f"to_download/{asin}"):
-            os.makedirs(f"to_download/{asin}")
+        if not os.path.exists(f"to_download/{asin_to_download}"):
+            os.makedirs(f"to_download/{asin_to_download}")
         images = []
         index_pt = 1
         for index, key in enumerate(sel):
@@ -74,7 +76,7 @@ if (option == "From upload" and files) or (option == "From URL" and os.path.exis
             else:
                 suffix = st.session_state[prfix]
             filename_zip = f"{asin_to_download}.{suffix}.{ext}"
-            filename = f"to_download/{asin}/{asin_to_download}.{suffix}.{ext}"
+            filename = f"to_download/{asin_to_download}/{asin_to_download}.{suffix}.{ext}"
 
             if image.mode == "JPEG":
                 image.save(filename.format(im_format=image.format))
@@ -85,5 +87,6 @@ if (option == "From upload" and files) or (option == "From URL" and os.path.exis
                 # some minor case, resulting jpg file is larger one, should meet your expectation
 
             images.append(filename_zip)
-        download_multiple_files(images, asin_to_download, root_folder=f"to_download/{asin}")
-
+    if os.path.exists(f"to_download/{asin_to_download}") and asin_to_download is not None and asin_to_download!="":
+        images = get_filename_images(sel, asin_to_download)
+        download_multiple_files(images, asin_to_download, root_folder=f"to_download/{asin_to_download}")

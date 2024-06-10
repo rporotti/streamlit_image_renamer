@@ -122,13 +122,24 @@ def download_multiple_files(images, asin_to_download, root_folder):
     with zipfile.ZipFile(buf, "x") as zip:
         for zip_file in images:
             zip.write(os.path.join(root_folder, zip_file), zip_file)
-
+    status_checkbox = st.checkbox("Clean all files after download", value=True)
     st.download_button(
         "Download all data",
         mime="application/zip",
         file_name=f"{asin_to_download}.zip",
-        data=buf.getvalue()
+        data=buf.getvalue(),
+        on_click=post_download,
+        kwargs={"clean_all": status_checkbox, "asin": asin_to_download},
     )
+
+
+def post_download(asin, clean_all=False):
+    if clean_all:
+        if os.path.exists(f"output/{asin}"):
+            shutil.rmtree(f"output/{asin}")
+        if os.path.exists(f"to_download/{asin}"):
+            shutil.rmtree(f"to_download/{asin}")
+        #shutil.rmtree("output")
 
 @st.cache_data
 def load_images(uploaded_files, asin):
@@ -153,3 +164,18 @@ def clean_files():
     shutil.rmtree("to_download", ignore_errors=True)
     os.makedirs("output")
     os.makedirs("to_download")
+
+def get_filename_images(sel, asin_to_download):
+    images = []
+    index_pt = 1
+    for index, key in enumerate(sel):
+        ext = key.split(".")[-1]
+        prfix = f'prefix_{key}'
+        if "PT" in st.session_state[prfix]:
+            suffix = f"PT{str(index_pt).zfill(2)}"
+            index_pt += 1
+        else:
+            suffix = st.session_state[prfix]
+        filename_zip = f"{asin_to_download}.{suffix}.{ext}"
+        images.append(filename_zip)
+    return images
